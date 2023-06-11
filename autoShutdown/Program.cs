@@ -9,46 +9,64 @@ namespace autoShutdown
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("What do you want to do?: (shutdown, restart or cancel: )");
-            string answer = Console.ReadLine();
+            programStart:
+            Console.WriteLine
+                (
+                "What do you want to do?: \r\n1. Shutdown \r\n2. Restart \r\n3. Cancel active process"
+                );
+            int answer = Convert.ToInt32(Console.ReadLine());
+            System.Type type = answer.GetType();
 
-            if (answer == "shutdown")
+            while (answer != null)
             {
-                Console.WriteLine("After how many minutes do you want the computer to shut down?: ");
-                int minutes = Convert.ToInt32(Console.ReadLine());
-                int seconds = minutes * 60;
+                if (answer == 1)
+                {
+                    Console.WriteLine("After how many minutes do you want the computer to shut down?: ");
+                    int minutes = Convert.ToInt32(Console.ReadLine());
+                    int seconds = minutes * 60;
 
-                Shutdown(seconds);
+                    Shutdown(seconds);
+                    Console.Clear();
+                    goto programStart;
+                }
+                else if (answer == 2)
+                {
+                    Console.WriteLine("After how many minutes do you want the computer to restart?: ");
+                    int minutes = Convert.ToInt32(Console.ReadLine());
+                    int seconds = minutes * 60;
 
-                Process.Start("shutdown", $"/s /f /t {seconds}");
-            }
-            else if (answer == "restart")
-            {
-                Restart();
-            }
-            else if (answer == "cancel")
-            {
-                Cancel();
-            }
-            else
-            {
-                Console.WriteLine("Error: Unvalid command. Restart the program.");
-            }
+                    Restart(seconds);
+                    Console.Clear();
+                    goto programStart;
+                }
+                else if (answer == 3)
+                {
+                    Cancel();
+                    Console.Clear();
+                    goto programStart;
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Error: Unvalid command.");                   
+                    goto programStart;
+                }
 
-            //Functions
-            static void Shutdown(int time)
-            {
-                Process.Start("shutdown", $"/s /f /t {time}");
-            }
+                //Functions
+                static void Shutdown(int time)
+                {
+                    Process.Start("shutdown", $"/s /f /t {time}");
+                }
 
-            static void Restart()
-            {
-                Process.Start("shutdown", "/r");
-            }
+                static void Restart(int time)
+                {
+                    Process.Start("shutdown", $"/r /t {time}");
+                }
 
-            static void Cancel()
-            {
-                Process.Start("shutdown", "/a");
+                static void Cancel()
+                {
+                    Process.Start("shutdown", "/a");
+                }
             }
         }
     }
